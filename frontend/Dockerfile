@@ -7,12 +7,16 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-# Confirm .env is present and readable
+# Copy CI-safe environment config
+COPY .env.ci .env
+
+# Print it to verify it's available
 RUN echo "--- PRINTING .env ---" && cat .env
 
-# Ensure it's used during build
+# Build with the injected env
 ENV BUILDING_DOCKER=true
-RUN cp .env .env.production && npm run build
+RUN npm run build
+
 
 
 # Stage 2: Serve with Nginx
